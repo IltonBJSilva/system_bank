@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Banco Flask</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        label, input, button {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .extrato {
+            border: 1px solid #999;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .extrato h3 {
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Banco Flask</h1>
+
+    <!-- Formulário de Depósito -->
+    <form method="post" action="/deposito">
+        <label for="valor">Valor para depósito:</label>
+        <input type="number" name="valor" step="0.01" required>
+        <button type="submit">Depositar</button>
+    </form>
+
+    <!-- Formulário de Saque -->
+    <form method="post" action="/saque">
+        <label for="saque">Valor para Saque:</label>
+        <input type="number" name="saque" step="0.01" required>
+        <button type="submit">Sacar</button>
+    </form>
+
+    <!-- Área do Extrato -->
+    <div class="extrato">
+        <h3>Extrato</h3>
+        <p>Saldo atual: R$ {{ conta.saldo if conta else "0,00" }}</p>
+        <ul>
+            {% if conta and conta.extrato %}
+                {% for item in conta.extrato %}
+                    <li>{{ item }}</li>
+                {% endfor %}
+            {% else %}
+                <li>-- Nenhuma transação ainda --</li>
+            {% endif %}
+        </ul>
+    </div>
+
+    <!-- Pop-up de sucesso para depósito -->
+    {% if sucesso_deposito %}
+    <script>
+        alert("Depósito realizado com sucesso!");
+    </script>
+    {% endif %}
+
+    <!-- Pop-up de sucesso para saque -->
+    {% if sucesso_saque %}
+    <script>
+        alert("Saque realizado com sucesso!");
+    </script>
+    {% endif %}
+
+
+</body>
+</html>
