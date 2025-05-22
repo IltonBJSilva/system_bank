@@ -1,29 +1,36 @@
+from flask import Flask, render_template, request
 from services.deposito import realizar_deposito
 from services.saque import realizar_saque
-from services.extrato import gerar_extrato
 
-def main():
-    conta = {
-        "saldo": 0.0,
-        "extrato": [],
-        "saques_diarios": 0
-    }
+app = Flask(__name__)
 
-    while True:
-        print("\n1 - Depositar")
-        print("2 - Sacar")
-        print("3 - Ver Extrato e Sair")
-        opcao = input("Escolha uma opção: ")
+# Simula uma conta fixa (só pra testes)
+conta = {
+    'saldo': 0.0,
+    'extrato': [],
+    "saques_diarios": 0
+}
 
-        if opcao == "1":
-            print(realizar_deposito(conta))
-        elif opcao == "2":
-            print(realizar_saque(conta))
-        elif opcao == "3":
-            print(gerar_extrato(conta))
-            break
-        else:
-            print("Opção inválida")
+@app.route('/home')
+def home():
+    nome = "Ilton Batista"
+    return render_template('index.html', nome=nome, conta=conta)
 
-if __name__ == "__main__":
-    main()
+@app.route('/deposito', methods=['POST'])
+def deposito():
+    valor = request.form.get('valor', type=float)
+    conta['valor'] = valor
+    realizar_deposito(conta, valor)
+    return render_template('index.html', conta=conta, sucesso_deposito=True)
+
+
+@app.route('/saque', methods=['POST'])
+def saque():
+    saque = request.form.get('saque', type=float)
+    realizar_saque(conta, saque)
+    return render_template('index.html', conta=conta, sucesso_saque=True)
+
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
