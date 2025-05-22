@@ -16,11 +16,11 @@ def main():
         opcao = input("Escolha uma opção: ")
 
         if opcao == "1":
-            realizar_deposito(conta)
+            print(realizar_deposito(conta))
         elif opcao == "2":
-            realizar_saque(conta)
+            print(realizar_saque(conta))
         elif opcao == "3":
-            gerar_extrato(conta)
+            print(gerar_extrato(conta))
             break
         else:
             print("Opção inválida")
