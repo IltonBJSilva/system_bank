@@ -1,6 +1,6 @@
 
-def realizar_deposito(conta):
-    valor = float(input('Digite o valor a ser depositado: '))
+
+def realizar_deposito(conta, valor):
     conta["saldo"] += valor
     conta["extrato"].append(f"Depósito: R$ {valor}")
 
