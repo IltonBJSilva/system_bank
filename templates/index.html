@@ -36,6 +36,9 @@
             border-radius: 5px;
             cursor: pointer;
         }
+        button.download {
+            background-color: #008CBA; /* Azul para o botão de download */
+        }
 
         .extrato {
             border: 1px solid #999;
@@ -47,33 +50,65 @@
         .extrato h3 {
             margin-top: 0;
         }
+        .flash-message {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .flash-message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
+        }
+        .flash-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-color: #f5c6cb;
+        }
+        .flash-message.info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border-color: #bee5eb;
+        }
     </style>
 </head>
 <body>
 
     <h1>Banco Flask</h1>
 
-    <!-- Formulário de Depósito -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flashes">
+        {% for category, message in messages %}
+          <li class="flash-message {{ category }}">{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
     <form method="post" action="/deposito">
         <label for="valor">Valor para depósito:</label>
         <input type="number" name="valor" step="0.01" required>
         <button type="submit">Depositar</button>
     </form>
 
-    <!-- Formulário de Saque -->
     <form method="post" action="/saque">
         <label for="saque">Valor para Saque:</label>
         <input type="number" name="saque" step="0.01" required>
         <button type="submit">Sacar</button>
     </form>
 
-    <!-- Área do Extrato -->
+    <form action="/download_extrato">
+        <button type="submit" class="download">Gerar Extrato</button>
+    </form>
+
     <div class="extrato">
         <h3>Extrato</h3>
-        <p>Saldo atual: R$ {{ conta.saldo if conta else "0,00" }}</p>
+        <p>Saldo atual: R$ {{ "%.2f" | format(conta.saldo) if conta else "0.00" }}</p>
         <ul>
-            {% if conta and conta.extrato %}
-                {% for item in conta.extrato %}
+            {% if extrato_formatado %}
+                {% for item in extrato_formatado %}
                     <li>{{ item }}</li>
                 {% endfor %}
             {% else %}
@@ -81,21 +116,5 @@
             {% endif %}
         </ul>
     </div>
-
-    <!-- Pop-up de sucesso para depósito -->
-    {% if sucesso_deposito %}
-    <script>
-        alert("Depósito realizado com sucesso!");
-    </script>
-    {% endif %}
-
-    <!-- Pop-up de sucesso para saque -->
-    {% if sucesso_saque %}
-    <script>
-        alert("Saque realizado com sucesso!");
-    </script>
-    {% endif %}
-
-
 </body>
 </html>
